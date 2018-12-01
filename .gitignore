@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# build directory
+build/*
+# allow .gitkeep file in build directory
+!build/.gitkeep

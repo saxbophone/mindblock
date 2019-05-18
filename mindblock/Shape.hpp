@@ -4,7 +4,7 @@
 #include <cstdint>
 
 namespace mindblock {
-    enum struct Shape : unsigned char {
+    enum struct Shape : uint_fast8_t {
         Square,
     };
 }

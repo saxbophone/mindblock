@@ -26,7 +26,7 @@ message(
 )
 
 # set default C++ standard to use (C++11)
-set(mindblock_CXX_STANDARD "14")
+set(mindblock_CXX_STANDARD "11")
 # if env variable mindblock_CXX_STANDARD is set, override version
 if(DEFINED ENV{mindblock_CXX_STANDARD})
     set(mindblock_CXX_STANDARD "$ENV{mindblock_CXX_STANDARD}")

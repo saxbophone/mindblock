@@ -1,24 +1,17 @@
 #ifndef SAXBOPHONE_MINDBLOCK_BLOCK_HPP
 #define SAXBOPHONE_MINDBLOCK_BLOCK_HPP
 
-#include "Colour.hpp"
+#include "BlockType.hpp"
 #include "Shape.hpp"
+
 
 namespace mindblock {
     class Block {
     public:
-        Block(Shape shape=Shape::Square, Colour colour=Colour::Grey);
+        Block(bool is_attached=false, BlockType* block_type=NULL);
 
-        Shape shape;
-        Colour colour;
-    };
-
-    /*
-     * this hashing structure is needed so we can stuff Block instances into an
-     * unordered_set
-     */
-    struct hash_block {
-        size_t operator()(const Block &block) const;
+        bool is_attached; // is this Block attached to the mass of Blocks?
+        BlockType* block_type; // what type (shape and colour) this Block is
     };
 }
 

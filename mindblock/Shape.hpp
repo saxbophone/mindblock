@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+
 namespace mindblock {
     enum struct Shape : uint_fast8_t {
         Square,

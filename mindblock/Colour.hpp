@@ -4,7 +4,7 @@
 #include <cstdint>
 
 namespace mindblock {
-    enum struct Colour : uint_fast8_t {
+    enum struct Colour : unsigned char {
         Grey, // default bland colour
         // the rainbow, but divided mathematically according to light primaries
         Red,

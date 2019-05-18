@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Level.hpp"
 
 
@@ -22,6 +24,27 @@ namespace mindblock {
 
         // check move is possible before moving blocks
         if (this->shift_possible(move)) {
+            switch (move) {
+                case Direction::Left: {
+                    // when shifting left, we start at the second column
+                    for (size_t x = 1; x < grid_size; x++) {
+                        for (size_t y = 0; y < grid_size; y++) {
+                            swap(this->grid[x][y], this->grid[x - 1][y]);
+                        }
+                    }
+                    break;
+                }
+                case Direction::Right: {
+                    // when shifting right, we start at the penultimate column
+                    // ARGH I DON'T KNOW IF ANY OF THIS IS RIGHT!
+                    for (size_t x = grid_size - 1; x > 1; x--) {
+                        for (size_t y = 0; y < grid_size; y++) {
+                            swap(this->grid[x - 1][y], this->grid[x - 2][y]);
+                        }
+                    }
+                    break;
+                }
+            }
         }
         // TODO: implement shifting algorithm
         return;

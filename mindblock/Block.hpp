@@ -7,7 +7,10 @@
 namespace mindblock {
     class Block {
     public:
-        Block(Colour colour=Colour::Grey, Shape shape=Shape::Square);
+        Block(Shape shape=Shape::Square, Colour colour=Colour::Grey);
+
+        Shape shape;
+        Colour colour;
     };
 }
 

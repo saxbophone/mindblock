@@ -3,36 +3,36 @@ cmake_minimum_required(VERSION 3.0)
 
 project(mindblock VERSION 0.0.0 LANGUAGES CXX)
 # set build number - this increments for any new version
-set(mindblock_VERSION_BUILD 1)
+set(MINDBLOCK_VERSION_BUILD 1)
 
 set(
-    mindblock_VERSION_STRING
+    MINDBLOCK_VERSION_STRING
     "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
 )
-set(mindblock_ESCAPED_VERSION_STRING "\"${mindblock_VERSION_STRING}\"")
+set(MINDBLOCK_ESCAPED_VERSION_STRING "\"${MINDBLOCK_VERSION_STRING}\"")
 # end basic metadata
 
 # pass in version of program as preprocessor definitions
-add_definitions(-Dmindblock_VERSION_MAJOR=${PROJECT_VERSION_MAJOR})
-add_definitions(-Dmindblock_VERSION_MINOR=${PROJECT_VERSION_MINOR})
-add_definitions(-Dmindblock_VERSION_PATCH=${PROJECT_VERSION_PATCH})
-add_definitions(-Dmindblock_VERSION_BUILD=${mindblock_VERSION_BUILD})
-add_definitions(-Dmindblock_VERSION_STRING=${mindblock_ESCAPED_VERSION_STRING})
+add_definitions(-DMINDBLOCK_VERSION_MAJOR=${PROJECT_VERSION_MAJOR})
+add_definitions(-DMINDBLOCK_VERSION_MINOR=${PROJECT_VERSION_MINOR})
+add_definitions(-DMINDBLOCK_VERSION_PATCH=${PROJECT_VERSION_PATCH})
+add_definitions(-DMINDBLOCK_VERSION_BUILD=${MINDBLOCK_VERSION_BUILD})
+add_definitions(-DMINDBLOCK_VERSION_STRING=${MINDBLOCK_ESCAPED_VERSION_STRING})
 
 message(
     STATUS
-    "[mindblock] Preparing to build mindblock v${mindblock_VERSION_STRING} "
-    "(build ${mindblock_VERSION_BUILD})"
+    "[mindblock] Preparing to build mindblock v${MINDBLOCK_VERSION_STRING} "
+    "(build ${MINDBLOCK_VERSION_BUILD})"
 )
 
 # set default C++ standard to use (C++11)
-set(mindblock_CXX_STANDARD "11")
-# if env variable mindblock_CXX_STANDARD is set, override version
-if(DEFINED ENV{mindblock_CXX_STANDARD})
-    set(mindblock_CXX_STANDARD "$ENV{mindblock_CXX_STANDARD}")
+set(MINDBLOCK_CXX_STANDARD "11")
+# if env variable MINDBLOCK_CXX_STANDARD is set, override version
+if(DEFINED ENV{MINDBLOCK_CXX_STANDARD})
+    set(MINDBLOCK_CXX_STANDARD "$ENV{MINDBLOCK_CXX_STANDARD}")
 endif()
-message(STATUS "[mindblock] C++ Standard set to C++${mindblock_CXX_STANDARD}")
-set(CMAKE_CXX_STANDARD ${mindblock_CXX_STANDARD})
+message(STATUS "[mindblock] C++ Standard set to C++${MINDBLOCK_CXX_STANDARD}")
+set(CMAKE_CXX_STANDARD ${MINDBLOCK_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # used for enabling additional compiler options if supported
@@ -67,13 +67,13 @@ endif()
 
 # default build type is only static if on Windows
 if(WIN32)
-    set(mindblock_STATIC_BUILD ON CACHE BOOL "")
+    set(MINDBLOCK_STATIC_BUILD ON CACHE BOOL "")
 else()
-    set(mindblock_STATIC_BUILD OFF CACHE BOOL "")
+    set(MINDBLOCK_STATIC_BUILD OFF CACHE BOOL "")
 endif()
 
 # do necessary things if static build was requested
-if(mindblock_STATIC_BUILD)
+if(MINDBLOCK_STATIC_BUILD)
     message(STATUS "[mindblock] Performing a Static Build")
     set(SFML_STATIC_LIBRARIES ON)
 endif()
@@ -91,20 +91,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # SDL2
 find_package(SFML 2 REQUIRED COMPONENTS audio graphics window system)
 include_directories(${SFML_INCLUDE_DIR})
-# COLRCV
-find_package(COLRCV 0.1 REQUIRED)
-include_directories(${COLRCV_INCLUDE_DIR})
 
 # compile the bulk of mindblock into a library (libmindblock)
 # this is then shared among the programs which depend on it
 
 # libmindblock C++ Sources
-file(GLOB LIBmindblock_SOURCES "mindblock/*.cpp")
+file(GLOB LIBMINDBLOCK_SOURCES "mindblock/*.cpp")
 # libmindblock Headers
-file(GLOB LIBmindblock_HEADERS "mindblock/*.hpp")
+file(GLOB LIBMINDBLOCK_HEADERS "mindblock/*.hpp")
 
 # here we define the libmindblock library
-add_library(mindblock ${LIBmindblock_SOURCES})
+add_library(mindblock ${LIBMINDBLOCK_SOURCES})
 
 # if we're on windows, then set these additional linker options so the console
 # window doesn't show up and get in the way
@@ -114,7 +111,7 @@ endif()
 
 # here we link libmindblock with its dependencies
 # we need to do additional linking steps if it's a static build
-if(mindblock_STATIC_BUILD)
+if(MINDBLOCK_STATIC_BUILD)
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         # if we're using GCC then these are the flags we need to use to enable
         # statically linking the C and C++ standard libraries
@@ -127,10 +124,10 @@ if(mindblock_STATIC_BUILD)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
     endif()
     # if we're statically linking, then we need to manually link SFML's dependencies as well
-    target_link_libraries(mindblock ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ${COLRCV_LIBRARIES})
+    target_link_libraries(mindblock ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 else()
-    # if we're dynamically linking, we only need to link SFML and COLRCV
-    target_link_libraries(mindblock ${SFML_LIBRARIES} ${COLRCV_LIBRARIES})
+    # if we're dynamically linking, we only need to link SFML
+    target_link_libraries(mindblock ${SFML_LIBRARIES})
 endif()
 
 # specify executables and link with the library

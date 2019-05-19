@@ -18,6 +18,17 @@ namespace mindblock {
         // XXX: for now, just generate a fixed puzzle
         this->block_palette.insert(BlockType());
         this->blocks.push_back(Block(this->block_palette.begin(), true));
+        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->grid[4][3] = &this->blocks[0];
+        this->grid[1][2] = &this->blocks[1];
+        this->grid[5][5] = &this->blocks[2];
+        this->grid[6][0] = &this->blocks[3];
+        this->grid[2][4] = &this->blocks[4];
+        this->grid[3][6] = &this->blocks[5];
         // TODO: randomly generate a puzzle
     }
 
@@ -30,8 +41,8 @@ namespace mindblock {
                     for (size_t x = 1; x < this->grid_size; x++) {
                         for (size_t y = 0; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
-                            if (candidate->is_attached) {
-                                std::swap(this->grid[x - 1][y], candidate);
+                            if (candidate != NULL && candidate->is_attached) {
+                                std::swap(this->grid[x - 1][y], this->grid[x][y]);
                             }
                         }
                     }
@@ -42,8 +53,8 @@ namespace mindblock {
                     for (size_t x = this->grid_size - 1; x > 1; x--) {
                         for (size_t y = 0; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
-                            if (candidate->is_attached) {
-                                std::swap(this->grid[x - 1][y], candidate);
+                            if (candidate != NULL && candidate->is_attached) {
+                                std::swap(this->grid[x - 1][y], this->grid[x][y]);
                             }
                         }
                     }
@@ -54,8 +65,8 @@ namespace mindblock {
                     for (size_t x = 0; x < this->grid_size; x++) {
                         for (size_t y = 1; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
-                            if (candidate->is_attached) {
-                                std::swap(this->grid[x][y - 1], candidate);
+                            if (candidate != NULL && candidate->is_attached) {
+                                std::swap(this->grid[x][y - 1], this->grid[x][y]);
                             }
                         }
                     }
@@ -66,8 +77,8 @@ namespace mindblock {
                     for (size_t x = 0; x < this->grid_size; x++) {
                         for (size_t y = this->grid_size - 1; y > 1; y--) {
                             Block* candidate = this->grid[x][y];
-                            if (candidate->is_attached) {
-                                std::swap(this->grid[x][y - 1], candidate);
+                            if (candidate != NULL && candidate->is_attached) {
+                                std::swap(this->grid[x][y - 1], this->grid[x][y]);
                             }
                         }
                     }
@@ -94,6 +105,11 @@ namespace mindblock {
     }
 
     void Level::print() {
+        printf("\n");
+        for (size_t x = 0; x < this->grid_size + 2; x++) {
+            printf("#");
+        }
+        printf("\n#");
         for (size_t y = 0; y < this->grid_size; y++) {
             for (size_t x = 0; x < this->grid_size; x++) {
                 Block* block = this->grid[x][y];
@@ -105,8 +121,12 @@ namespace mindblock {
                     printf("O");
                 }
             }
-            printf("\n");
+            printf("#\n#");
         }
+        for (size_t x = 0; x < this->grid_size + 1; x++) {
+            printf("#");
+        }
+        printf("\n");
     }
 
     bool Level::shift_possible(Direction move) const {

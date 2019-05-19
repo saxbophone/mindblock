@@ -69,7 +69,22 @@ namespace mindblock {
                     break;
                 }
             }
-            // TODO: recalculate attached blocks
+            // recalculate attached blocks
+            this->attach_blocks();
+        }
+    }
+
+    void Level::attach_blocks() {
+        // iterate over whole grid and check each Block that is attached
+        for (size_t x = 0; x < grid_size; x++) {
+            for (size_t y = 0; y < grid_size; y++) {
+                Block* block = this->grid[x][y];
+                if (block != NULL && block->is_attached) {
+                    // XXX: mark block as unattached so the recursive method works
+                    block->is_attached = false;
+                    this->attach_block(x, y);
+                }
+            }
         }
     }
 
@@ -105,5 +120,26 @@ namespace mindblock {
         }
         // if we got this far, all are empty and the shift is possible
         return true;
+    }
+
+    void Level::attach_block(size_t x, size_t y) {
+        Block* block = this->grid[x][y];
+        if (block != NULL && !block->is_attached) {
+            // mark the Block as attached
+            block->is_attached = true;
+            // call this method recursively on adjacent cells
+            if (x > 0) { // to the left
+                this->attach_block(x - 1, y);
+            }
+            if (x < grid_size - 1) { // to the right
+                this->attach_block(x + 1, y);
+            }
+            if (y > 0) { // to the top
+                this->attach_block(x, y - 1);
+            }
+            if (y < grid_size - 1) { // to the bottom
+                this->attach_block(x, y + 1);
+            }
+        }
     }
 }

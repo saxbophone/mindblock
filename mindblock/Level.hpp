@@ -23,9 +23,13 @@ namespace mindblock {
 
         // used to enact the player's moves
         void shift(Direction move);
+        // attaches all Blocks adjacent to attached Blocks
+        void attach_blocks();
     private:
         // returns true if it is possible to shift the Blocks in the given direction
         bool shift_possible(Direction move) const;
+        // attaches blocks adjacent to a given Block
+        void attach_block(size_t x, size_t y);
         // set of all the blocks used in the puzzle
         std::unordered_set<BlockType, hash_block_type> block_palette;
         size_t grid_size; // the size of each grid axis

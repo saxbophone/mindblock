@@ -12,6 +12,10 @@ namespace mindblock {
       : shape(shape), colour(colour)
       {}
 
+    bool BlockType::operator==(const BlockType &other) const {
+        return other.shape == this->shape && other.colour == this->colour;
+    }
+
     size_t hash_block_type::operator()(const BlockType &block_type) const {
         // XXX: implementation-dependent, relies on uint8_t types for members
         return std::hash<uint_fast16_t>()(

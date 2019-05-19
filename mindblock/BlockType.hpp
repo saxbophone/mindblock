@@ -10,6 +10,8 @@ namespace mindblock {
     public:
         BlockType(Shape shape=Shape::Square, Colour colour=Colour::Grey);
 
+        bool operator==(const BlockType &other) const;
+
         Shape shape;
         Colour colour;
     };

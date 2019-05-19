@@ -1,4 +1,4 @@
-#include <functional>
+#include <unordered_set>
 
 #include <cstdint>
 
@@ -7,7 +7,11 @@
 
 
 namespace mindblock {
-    Block::Block(bool is_attached, BlockType* block_type)
-      : is_attached(is_attached), block_type(block_type)
+    Block::Block(
+        std::unordered_set<BlockType, hash_block_type>::iterator block_type,
+        bool is_attached
+    )
+      : is_attached(is_attached)
+      , block_type(block_type)
       {}
 }

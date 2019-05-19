@@ -15,6 +15,9 @@ namespace mindblock {
         for (auto &column : this->grid) {
             column.resize(grid_size, NULL);
         }
+        // XXX: for now, just generate a fixed puzzle
+        this->block_palette.insert(BlockType());
+        this->blocks.push_back(Block(this->block_palette.begin(), true));
         // TODO: randomly generate a puzzle
     }
 
@@ -24,8 +27,8 @@ namespace mindblock {
             switch (move) {
                 case Direction::Left: {
                     // when shifting left, we start at the second column
-                    for (size_t x = 1; x < grid_size; x++) {
-                        for (size_t y = 0; y < grid_size; y++) {
+                    for (size_t x = 1; x < this->grid_size; x++) {
+                        for (size_t y = 0; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
                             if (candidate->is_attached) {
                                 std::swap(this->grid[x - 1][y], candidate);
@@ -36,8 +39,8 @@ namespace mindblock {
                 }
                 case Direction::Right: {
                     // when shifting right, we start at the penultimate column
-                    for (size_t x = grid_size - 1; x > 1; x--) {
-                        for (size_t y = 0; y < grid_size; y++) {
+                    for (size_t x = this->grid_size - 1; x > 1; x--) {
+                        for (size_t y = 0; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
                             if (candidate->is_attached) {
                                 std::swap(this->grid[x - 1][y], candidate);
@@ -48,8 +51,8 @@ namespace mindblock {
                 }
                 case Direction::Up: {
                     // when shifting up, we start at the second row
-                    for (size_t x = 0; x < grid_size; x++) {
-                        for (size_t y = 1; y < grid_size; y++) {
+                    for (size_t x = 0; x < this->grid_size; x++) {
+                        for (size_t y = 1; y < this->grid_size; y++) {
                             Block* candidate = this->grid[x][y];
                             if (candidate->is_attached) {
                                 std::swap(this->grid[x][y - 1], candidate);
@@ -60,8 +63,8 @@ namespace mindblock {
                 }
                 case Direction::Down: {
                     // when shifting down, we start at the penultimate row
-                    for (size_t x = 0; x < grid_size; x++) {
-                        for (size_t y = grid_size - 1; y > 1; y--) {
+                    for (size_t x = 0; x < this->grid_size; x++) {
+                        for (size_t y = this->grid_size - 1; y > 1; y--) {
                             Block* candidate = this->grid[x][y];
                             if (candidate->is_attached) {
                                 std::swap(this->grid[x][y - 1], candidate);
@@ -78,8 +81,8 @@ namespace mindblock {
 
     void Level::attach_blocks() {
         // iterate over whole grid and check each Block that is attached
-        for (size_t x = 0; x < grid_size; x++) {
-            for (size_t y = 0; y < grid_size; y++) {
+        for (size_t x = 0; x < this->grid_size; x++) {
+            for (size_t y = 0; y < this->grid_size; y++) {
                 Block* block = this->grid[x][y];
                 if (block != NULL && block->is_attached) {
                     // XXX: mark block as unattached so the recursive method works
@@ -91,8 +94,8 @@ namespace mindblock {
     }
 
     void Level::print() {
-        for (size_t y = 0; y < grid_size; y++) {
-            for (size_t x = 0; x < grid_size; x++) {
+        for (size_t y = 0; y < this->grid_size; y++) {
+            for (size_t x = 0; x < this->grid_size; x++) {
                 Block* block = this->grid[x][y];
                 if (block == NULL) {
                     printf(" ");
@@ -149,13 +152,13 @@ namespace mindblock {
             if (x > 0) { // to the left
                 this->attach_block(x - 1, y);
             }
-            if (x < grid_size - 1) { // to the right
+            if (x < this->grid_size - 1) { // to the right
                 this->attach_block(x + 1, y);
             }
             if (y > 0) { // to the top
                 this->attach_block(x, y - 1);
             }
-            if (y < grid_size - 1) { // to the bottom
+            if (y < this->grid_size - 1) { // to the bottom
                 this->attach_block(x, y + 1);
             }
         }

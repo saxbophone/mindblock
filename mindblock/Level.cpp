@@ -17,11 +17,6 @@ namespace mindblock {
     }
 
     void Level::shift(Direction move) {
-        // shifting algorithm:
-        // - check move is possible
-        // - move all 'attached' blocks by shift vector
-        // - attach any 'unattached' blocks that are now adjacent to 'attached' ones
-
         // check move is possible before moving blocks
         if (this->shift_possible(move)) {
             switch (move) {
@@ -29,25 +24,53 @@ namespace mindblock {
                     // when shifting left, we start at the second column
                     for (size_t x = 1; x < grid_size; x++) {
                         for (size_t y = 0; y < grid_size; y++) {
-                            swap(this->grid[x][y], this->grid[x - 1][y]);
+                            Block* candidate = this->grid[x][y];
+                            if (candidate->is_attached) {
+                                std::swap(this->grid[x - 1][y], candidate);
+                            }
                         }
                     }
                     break;
                 }
                 case Direction::Right: {
                     // when shifting right, we start at the penultimate column
-                    // ARGH I DON'T KNOW IF ANY OF THIS IS RIGHT!
                     for (size_t x = grid_size - 1; x > 1; x--) {
                         for (size_t y = 0; y < grid_size; y++) {
-                            swap(this->grid[x - 1][y], this->grid[x - 2][y]);
+                            Block* candidate = this->grid[x][y];
+                            if (candidate->is_attached) {
+                                std::swap(this->grid[x - 1][y], candidate);
+                            }
+                        }
+                    }
+                    break;
+                }
+                case Direction::Up: {
+                    // when shifting up, we start at the second row
+                    for (size_t x = 0; x < grid_size; x++) {
+                        for (size_t y = 1; y < grid_size; y++) {
+                            Block* candidate = this->grid[x][y];
+                            if (candidate->is_attached) {
+                                std::swap(this->grid[x][y - 1], candidate);
+                            }
+                        }
+                    }
+                    break;
+                }
+                case Direction::Down: {
+                    // when shifting down, we start at the penultimate row
+                    for (size_t x = 0; x < grid_size; x++) {
+                        for (size_t y = grid_size - 1; y > 1; y--) {
+                            Block* candidate = this->grid[x][y];
+                            if (candidate->is_attached) {
+                                std::swap(this->grid[x][y - 1], candidate);
+                            }
                         }
                     }
                     break;
                 }
             }
+            // TODO: recalculate attached blocks
         }
-        // TODO: implement shifting algorithm
-        return;
     }
 
     bool Level::shift_possible(Direction move) const {

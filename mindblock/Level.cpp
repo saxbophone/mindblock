@@ -27,7 +27,7 @@ namespace mindblock {
         this->grid[1][2] = &this->blocks[1];
         this->grid[5][5] = &this->blocks[2];
         this->grid[6][0] = &this->blocks[3];
-        this->grid[2][4] = &this->blocks[4];
+        this->grid[4][4] = &this->blocks[4];
         this->grid[3][6] = &this->blocks[5];
         // TODO: randomly generate a puzzle
     }

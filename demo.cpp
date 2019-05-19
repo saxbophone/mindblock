@@ -1,20 +1,32 @@
+#include <iostream>
+
 #include "mindblock/Level.hpp"
 
 
 int main(void) {
     using namespace mindblock;
+    std::cout << "Use w/a/s/d to move (followed by enter)" << std::endl;
     // test Level class
     Level level;
     level.print();
-    // a sequence of moves to make
-    Direction moves[] = {
-        Direction::Left,
-        Direction::Left,
-        Direction::Up,
-        Direction::Right,
-        Direction::Right,
-    };
-    for (auto move : moves) {
+    while (true) {
+        char input = '\0';
+        std::cin >> input;
+        Direction move;
+        switch (input) {
+        case 'w':
+            move = Direction::Up;
+            break;
+        case 'a':
+            move = Direction::Left;
+            break;
+        case 's':
+            move = Direction::Down;
+            break;
+        case 'd':
+            move = Direction::Right;
+            break;
+        }
         level.shift(move);
         level.print();
     }

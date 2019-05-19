@@ -35,6 +35,7 @@ namespace mindblock {
     void Level::shift(Direction move) {
         // check move is possible before moving blocks
         if (this->shift_possible(move)) {
+            printf("Shift possible\n");
             switch (move) {
                 case Direction::Left: {
                     // when shifting left, we start at the second column
@@ -50,9 +51,9 @@ namespace mindblock {
                 }
                 case Direction::Right: {
                     // when shifting right, we start at the penultimate column
-                    for (size_t x = this->grid_size - 1; x > 1; x--) {
+                    for (size_t x = this->grid_size - 1; x > 0; x--) {
                         for (size_t y = 0; y < this->grid_size; y++) {
-                            Block* candidate = this->grid[x][y];
+                            Block* candidate = this->grid[x - 1][y];
                             if (candidate != NULL && candidate->is_attached) {
                                 std::swap(this->grid[x - 1][y], this->grid[x][y]);
                             }
@@ -75,8 +76,8 @@ namespace mindblock {
                 case Direction::Down: {
                     // when shifting down, we start at the penultimate row
                     for (size_t x = 0; x < this->grid_size; x++) {
-                        for (size_t y = this->grid_size - 1; y > 1; y--) {
-                            Block* candidate = this->grid[x][y];
+                        for (size_t y = this->grid_size - 1; y > 0; y--) {
+                            Block* candidate = this->grid[x][y - 1];
                             if (candidate != NULL && candidate->is_attached) {
                                 std::swap(this->grid[x][y - 1], this->grid[x][y]);
                             }
@@ -87,6 +88,8 @@ namespace mindblock {
             }
             // recalculate attached blocks
             this->attach_blocks();
+        } else {
+            printf("Shift not possible\n");
         }
     }
 
@@ -131,14 +134,22 @@ namespace mindblock {
 
     bool Level::shift_possible(Direction move) const {
         size_t zero = 0;
-        size_t last = grid_size - 1;
+        size_t last = this->grid_size - 1;
         size_t* x = &zero; // initially assume we'll check the first column
         size_t* y = &zero; // initially assume we'll check the first row
         size_t i = 0; // this index will be incremented
+        // used for specfying the range of attached blocks to shift
+        size_t start = 1;
+        size_t end = this->grid_size;
+        // used for axis-aligned offsets of moves
+        int delta = -1;
         switch (move) {
         case Direction::Right:
             // if shifting right, we need to check the last column instead
             x = &last;
+            start = 0;
+            end = this->grid_size - 1;
+            delta = 1;
             // FALLTHROUGH!
         case Direction::Left:
             // as we're moving horizontally, we want to modify the y index
@@ -147,17 +158,53 @@ namespace mindblock {
         case Direction::Down:
             // if shifting down, we need to check the last row instead
             y = &last;
+            start = 0;
+            end = this->grid_size - 1;
+            delta = 1;
             // FALLTHROUGH!
         case Direction::Up:
             // as we're moving horizontally, we want to modify the x index
             x = &i;
             break;
         }
-        for (i = 0; i < grid_size; i++) {
-            // check each cell in this range to make sure it's empty
-            if (this->grid[*x][*y] != NULL) {
+        for (i = 0; i < this->grid_size; i++) {
+            // make sure there are no attached blocks in this range
+            Block* block = this->grid[*x][*y];
+            if (block != NULL && block->is_attached) {
                 return false;
             }
+        }
+        /*
+         * now, check every attached block and make sure the cell we want to
+         * move it to does not contain an unattached block
+         */
+        switch (move) {
+        case Direction::Left:
+        case Direction::Right:
+            for (size_t x = start; x < end; x++) {
+                for (size_t y = 0; y < this->grid_size; y++) {
+                    if (this->grid[x][y] != NULL && this->grid[x][y]->is_attached) {
+                        Block* block = this->grid[x + delta][y];
+                        if (block != NULL && !block->is_attached) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        case Direction::Up:
+        case Direction::Down:
+            for (size_t x = 0; x < this->grid_size; x++) {
+                for (size_t y = start; y < end; y++) {
+                    if (this->grid[x][y] != NULL && this->grid[x][y]->is_attached) {
+                        Block* block = this->grid[x][y + delta];
+                        if (block != NULL && !block->is_attached) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
         }
         // if we got this far, all are empty and the shift is possible
         return true;

@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <cstdio>
+
 #include "Level.hpp"
 
 
@@ -85,6 +87,22 @@ namespace mindblock {
                     this->attach_block(x, y);
                 }
             }
+        }
+    }
+
+    void Level::print() {
+        for (size_t y = 0; y < grid_size; y++) {
+            for (size_t x = 0; x < grid_size; x++) {
+                Block* block = this->grid[x][y];
+                if (block == NULL) {
+                    printf(" ");
+                } else if (block->is_attached) {
+                    printf("X");
+                } else {
+                    printf("O");
+                }
+            }
+            printf("\n");
         }
     }
 

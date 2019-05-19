@@ -25,6 +25,8 @@ namespace mindblock {
         void shift(Direction move);
         // attaches all Blocks adjacent to attached Blocks
         void attach_blocks();
+        // for debugging, prints a bitmap of which cells are occupied/attached
+        void print();
     private:
         // returns true if it is possible to shift the Blocks in the given direction
         bool shift_possible(Direction move) const;

@@ -4,28 +4,32 @@
 
 
 int main(void) {
-    using namespace mindblock;
+    namespace mb = mindblock;
     std::cout << "Use w/a/s/d to move (followed by enter)" << std::endl;
     // test Level class
-    Level level;
+    mb::Level level;
     level.attach_blocks();
     level.print();
     while (true) {
         char input = '\0';
         std::cin >> input;
-        Direction move;
+        mb::Direction move;
         switch (input) {
         case 'w':
-            move = Direction::Up;
+        case 'W':
+            move = mb::Direction::Up;
             break;
         case 'a':
-            move = Direction::Left;
+        case 'A':
+            move = mb::Direction::Left;
             break;
         case 's':
-            move = Direction::Down;
+        case 'S':
+            move = mb::Direction::Down;
             break;
         case 'd':
-            move = Direction::Right;
+        case 'D':
+            move = mb::Direction::Right;
             break;
         default:
             continue;

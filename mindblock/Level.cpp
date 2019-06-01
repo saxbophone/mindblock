@@ -123,8 +123,8 @@ namespace mindblock {
         // build a block rectangle primitive of the correct dimensions
         sf::RectangleShape sprite(
             sf::Vector2f(
-                window_size.x / this->grid_size,
-                window_size.y / this->grid_size
+                (double)window_size.x / this->grid_size,
+                (double)window_size.y / this->grid_size
             )
         );
         // check every cell in the grid for a Block
@@ -141,6 +141,16 @@ namespace mindblock {
                         (double)window_size.x / this->grid_size * x,
                         (double)window_size.y / this->grid_size * y
                     );
+                    // if Block is attached, give it an outline
+                    if (block->is_attached) {
+                        // give the shape a negative outline thickness so it extends into itself
+                        sprite.setOutlineThickness(
+                            // thickness is one 100th of size
+                            -(double)window_size.x / this->grid_size / 100
+                        );
+                    } else {
+                        sprite.setOutlineThickness(0.0f);
+                    }
                     window.draw(sprite);
                 }
             }

@@ -51,8 +51,10 @@ namespace mindblock {
     }
 
     void Game::draw() {
-        // clear screen to black for now
+        // clear screen to black
         this->window.clear(sf::Color::Black);
+        // tell the level to render itself
+        this->current_level.draw(this->window);
         // render the window
         this->window.display();
     }

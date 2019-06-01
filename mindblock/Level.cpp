@@ -3,6 +3,10 @@
 
 #include <cstdio>
 
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Level.hpp"
 
 
@@ -108,6 +112,36 @@ namespace mindblock {
                     // XXX: mark block as unattached so the recursive method works
                     block->is_attached = false;
                     this->attach_block(x, y);
+                }
+            }
+        }
+    }
+
+    void Level::draw(sf::RenderWindow& window) {
+        // get window dimensions
+        sf::Vector2u window_size = window.getSize();
+        // build a block rectangle primitive of the correct dimensions
+        sf::RectangleShape sprite(
+            sf::Vector2f(
+                window_size.x / this->grid_size,
+                window_size.y / this->grid_size
+            )
+        );
+        // check every cell in the grid for a Block
+        for (size_t y = 0; y < this->grid_size; y++) {
+            for (size_t x = 0; x < this->grid_size; x++) {
+                Block* block = this->grid[x][y];
+                if (block != NULL) { // block exists, get its colour
+                    // NOTE: in the future, we'll need to check Block Shape
+                    BlockType type = *block->block_type;
+                    // this dereference prevents COLOUR_MAP from being const for some reason
+                    sprite.setFillColor(COLOUR_MAP.at(type.colour));
+                    // set Block position and render it
+                    sprite.setPosition(
+                        (double)window_size.x / this->grid_size * x,
+                        (double)window_size.y / this->grid_size * y
+                    );
+                    window.draw(sprite);
                 }
             }
         }

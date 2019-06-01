@@ -7,6 +7,8 @@
 
 #include <cstdint>
 
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #include "Block.hpp"
 #include "BlockType.hpp"
 
@@ -27,6 +29,8 @@ namespace mindblock {
         bool shift(Direction move);
         // attaches all Blocks adjacent to attached Blocks
         void attach_blocks();
+        // draws the Level state to the given RenderWindow
+        void draw(sf::RenderWindow& window);
         // for debugging, prints a bitmap of which cells are occupied/attached
         void print();
     private:

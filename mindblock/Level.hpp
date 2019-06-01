@@ -21,8 +21,8 @@ namespace mindblock {
     public:
         Level(size_t grid_size=7);
 
-        // used to enact the player's moves
-        void shift(Direction move);
+        // used to enact the player's moves --returns true if anything changed
+        bool shift(Direction move);
         // attaches all Blocks adjacent to attached Blocks
         void attach_blocks();
         // for debugging, prints a bitmap of which cells are occupied/attached

@@ -8,7 +8,6 @@ int main(void) {
     std::cout << "Use w/a/s/d to move (followed by enter)" << std::endl;
     // test Level class
     mb::Level level;
-    level.attach_blocks();
     level.print();
     while (true) {
         char input = '\0';
@@ -34,8 +33,9 @@ int main(void) {
         default:
             continue;
         }
-        level.shift(move);
-        level.print();
+        if (level.shift(move)) {
+            level.print();
+        }
     }
     return 0;
 }

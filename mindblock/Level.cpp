@@ -30,12 +30,13 @@ namespace mindblock {
         this->grid[4][4] = &this->blocks[4];
         this->grid[3][6] = &this->blocks[5];
         // TODO: randomly generate a puzzle
+        // attach any attachable blocks before starting
+        this->attach_blocks();
     }
 
-    void Level::shift(Direction move) {
+    bool Level::shift(Direction move) {
         // check move is possible before moving blocks
         if (this->shift_possible(move)) {
-            printf("Shift possible\n");
             switch (move) {
                 case Direction::Left: {
                     // when shifting left, we start at the second column
@@ -88,8 +89,11 @@ namespace mindblock {
             }
             // recalculate attached blocks
             this->attach_blocks();
+            // a shift was possible, return true to indicate this
+            return true;
         } else {
-            printf("Shift not possible\n");
+            // indicate that a shift was not possible
+            return false;
         }
     }
 

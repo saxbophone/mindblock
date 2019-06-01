@@ -145,8 +145,8 @@ namespace mindblock {
                     if (block->is_attached) {
                         // give the shape a negative outline thickness so it extends into itself
                         sprite.setOutlineThickness(
-                            // thickness is one 100th of size
-                            -(double)window_size.x / this->grid_size / 100
+                            // thickness is one 50th of size
+                            -(double)window_size.x / this->grid_size / 50
                         );
                     } else {
                         sprite.setOutlineThickness(0.0f);

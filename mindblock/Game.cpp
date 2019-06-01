@@ -1,6 +1,7 @@
 #include <random>
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
@@ -15,7 +16,12 @@ namespace mindblock {
       , window(
             sf::VideoMode(640, 640),
             "Mindblock [DEMO] (c) Joshua Saxby 2019",
-            sf::Style::Titlebar | sf::Style::Close
+            sf::Style::Titlebar | sf::Style::Close,
+            sf::ContextSettings(
+                0, // depth
+                0, // stencil
+                1
+            )
         )
       , running(true)
       {

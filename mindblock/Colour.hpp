@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics/Color.hpp>
 
+
 namespace mindblock {
     enum struct Colour : uint_fast8_t {
         Grey, // default bland colour

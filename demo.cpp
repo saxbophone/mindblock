@@ -1,10 +1,11 @@
 #include <iostream>
 #include <random>
 
+#include "mindblock/Game.hpp"
 #include "mindblock/Level.hpp"
 
 
-int main(void) {
+int old_main(void) {
     namespace mb = mindblock;
     std::cout << "Use w/a/s/d to move (followed by enter)" << std::endl;
     // init PRNG --NOTE: std::random_device() doesn't work on MinGW
@@ -41,4 +42,12 @@ int main(void) {
         }
     }
     return 0;
+}
+
+int main() {
+    namespace mb = mindblock;
+    mb::Game game;
+    while (game.is_running()) {
+        game.run();
+    }
 }

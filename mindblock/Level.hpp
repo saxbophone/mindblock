@@ -10,6 +10,7 @@
 #include "Block.hpp"
 #include "BlockType.hpp"
 
+
 namespace mindblock {
     enum struct Direction : uint_fast8_t {
         Left,

@@ -1,3 +1,4 @@
+#include <random>
 #include <utility>
 
 #include <cstdio>
@@ -6,8 +7,9 @@
 
 
 namespace mindblock {
-    Level::Level(size_t grid_size)
-      : grid_size(grid_size)
+    Level::Level(std::mt19937& random_number_engine, size_t grid_size)
+      : random_number_engine(random_number_engine)
+      , grid_size(grid_size)
       {
         // set grid vector to the correct size
         this->grid.resize(grid_size);

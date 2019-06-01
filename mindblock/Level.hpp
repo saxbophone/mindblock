@@ -1,6 +1,7 @@
 #ifndef SAXBOPHONE_MINDBLOCK_LEVEL_HPP
 #define SAXBOPHONE_MINDBLOCK_LEVEL_HPP
 
+#include <random>
 #include <unordered_set>
 #include <vector>
 
@@ -19,7 +20,7 @@ namespace mindblock {
 
     class Level {
     public:
-        Level(size_t grid_size=7);
+        Level(std::mt19937& random_number_engine, size_t grid_size=7);
 
         // used to enact the player's moves --returns true if anything changed
         bool shift(Direction move);
@@ -32,6 +33,8 @@ namespace mindblock {
         bool shift_possible(Direction move) const;
         // attaches blocks adjacent to a given Block
         void attach_block(size_t x, size_t y);
+        // reference to a mersenne twister used for level generation
+        std::mt19937& random_number_engine;
         // set of all the blocks used in the puzzle
         std::unordered_set<BlockType, hash_block_type> block_palette;
         size_t grid_size; // the size of each grid axis

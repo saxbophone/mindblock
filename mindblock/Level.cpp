@@ -22,8 +22,8 @@ namespace mindblock {
             column.resize(grid_size, NULL);
         }
         // XXX: for now, just generate a fixed puzzle
-        this->block_palette.insert(BlockType(Shape::Square, Colour::Rose));
-        this->block_palette.insert(BlockType(Shape::Square, Colour::Indigo));
+        this->block_palette.insert(BlockType(Colour::Rose, Shape::Square));
+        this->block_palette.insert(BlockType(Colour::Indigo, Shape::Square));
         this->blocks.push_back(Block(++this->block_palette.begin(), true));
         this->blocks.push_back(Block(this->block_palette.begin(), false));
         this->blocks.push_back(Block(this->block_palette.begin(), false));

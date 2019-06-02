@@ -8,7 +8,7 @@
 namespace mindblock {
     class BlockType {
     public:
-        BlockType(Shape shape=Shape::Square, Colour colour=Colour::Grey);
+        BlockType(Colour colour=Colour::Grey, Shape shape=Shape::Square);
 
         bool operator==(const BlockType &other) const;
 

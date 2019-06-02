@@ -8,12 +8,12 @@
 
 
 namespace mindblock {
-    BlockType::BlockType(Shape shape, Colour colour)
+    BlockType::BlockType(Colour colour, Shape shape)
       : shape(shape), colour(colour)
       {}
 
     bool BlockType::operator==(const BlockType &other) const {
-        return other.shape == this->shape && other.colour == this->colour;
+        return other.colour == this->colour && other.shape == this->shape;
     }
 
     size_t hash_block_type::operator()(const BlockType &block_type) const {

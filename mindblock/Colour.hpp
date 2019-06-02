@@ -43,7 +43,7 @@ namespace mindblock {
         { Colour::Indigo,  sf::Color(  0,   0, 255), },
         { Colour::Purple,  sf::Color(127,   0, 255), },
         { Colour::Magenta, sf::Color(255,   0, 255), },
-        { Colour::Rose,    sf::Color(255,   0,   0), },
+        { Colour::Rose,    sf::Color(255,   0, 127), },
         { Colour::Brown,   sf::Color( 82,  32,   0), },
     };
 }

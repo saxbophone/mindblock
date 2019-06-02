@@ -22,13 +22,14 @@ namespace mindblock {
             column.resize(grid_size, NULL);
         }
         // XXX: for now, just generate a fixed puzzle
-        this->block_palette.insert(BlockType());
-        this->blocks.push_back(Block(this->block_palette.begin(), true));
+        this->block_palette.insert(BlockType(Shape::Square, Colour::Rose));
+        this->block_palette.insert(BlockType(Shape::Square, Colour::Indigo));
+        this->blocks.push_back(Block(++this->block_palette.begin(), true));
         this->blocks.push_back(Block(this->block_palette.begin(), false));
         this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(++this->block_palette.begin(), false));
         this->blocks.push_back(Block(this->block_palette.begin(), false));
-        this->blocks.push_back(Block(this->block_palette.begin(), false));
-        this->blocks.push_back(Block(this->block_palette.begin(), false));
+        this->blocks.push_back(Block(++this->block_palette.begin(), false));
         this->grid[4][3] = &this->blocks[0];
         this->grid[1][2] = &this->blocks[1];
         this->grid[5][5] = &this->blocks[2];
@@ -125,7 +126,7 @@ namespace mindblock {
             (double)window_size.x / this->grid_size,
             (double)window_size.y / this->grid_size
         );
-        const float border_multiplier = 0.15f;
+        const float border_multiplier = 0.075f;
         // we start off with a larger block size for creating border of attached
         sf::RectangleShape sprite(block_size * (1.0f + border_multiplier));
         // offset the sprite by half of the size increase to create the border

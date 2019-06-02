@@ -2,8 +2,7 @@
 
 
 int main() {
-    namespace mb = mindblock;
-    mb::Game game;
+    mindblock::Game game;
     while (game.is_running()) {
         game.run();
     }

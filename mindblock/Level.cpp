@@ -1,4 +1,5 @@
 #include <random>
+#include <type_traits>
 #include <utility>
 
 #include <cstdio>
@@ -21,22 +22,8 @@ namespace mindblock {
         for (auto &column : this->grid) {
             column.resize(grid_size, NULL);
         }
-        // XXX: for now, just generate a fixed puzzle
-        this->block_palette.insert(BlockType(Colour::Rose, Shape::Square));
-        this->block_palette.insert(BlockType(Colour::Indigo, Shape::Square));
-        this->blocks.push_back(Block(++this->block_palette.begin(), true));
-        this->blocks.push_back(Block(this->block_palette.begin(), false));
-        this->blocks.push_back(Block(this->block_palette.begin(), false));
-        this->blocks.push_back(Block(++this->block_palette.begin(), false));
-        this->blocks.push_back(Block(this->block_palette.begin(), false));
-        this->blocks.push_back(Block(++this->block_palette.begin(), false));
-        this->grid[4][3] = &this->blocks[0];
-        this->grid[1][2] = &this->blocks[1];
-        this->grid[5][5] = &this->blocks[2];
-        this->grid[6][0] = &this->blocks[3];
-        this->grid[4][4] = &this->blocks[4];
-        this->grid[3][6] = &this->blocks[5];
-        // TODO: randomly generate a puzzle
+        // generate a random puzzle
+        this->generate_random_puzzle();
         // attach any attachable blocks before starting
         this->attach_blocks();
     }
@@ -196,6 +183,70 @@ namespace mindblock {
         printf("\n");
     }
 
+    void Level::generate_random_puzzle() {
+        // these are our PRNGs for Blocks in the puzzle
+        std::uniform_int_distribution<std::underlying_type<Colour>::type>
+            colour_generator(
+                0,
+                (std::underlying_type<Colour>::type)
+                Colour::META_NUMBER_OF_COLOURS - 1
+            );
+        std::uniform_int_distribution<std::underlying_type<Shape>::type>
+            shape_generator(
+                0,
+                (std::underlying_type<Shape>::type)
+                Shape::META_NUMBER_OF_SHAPES - 1
+            );
+        std::uniform_int_distribution<size_t>
+            co_ord_generator(0, this->grid_size - 1);
+        // generate the same number of Blocks as our grid size
+        // reserve space in the block palette first of all to guarantee iterator validity
+        this->block_palette.reserve(this->grid_size);
+        // do the same for the blocks vector
+        this->blocks.reserve(this->grid_size);
+        for (size_t i = 0; i < this->grid_size; i++) {
+            // randomly generate a BlockType and insert into block palette
+            BlockType block_type = BlockType(
+                (Colour)colour_generator(this->random_number_engine),
+                (Shape)shape_generator(this->random_number_engine)
+            );
+            // this BlockType might already exist but it doesn't matter
+            this->block_palette.insert(block_type);
+            // create a Block of this type and insert into Blocks vector
+            this->blocks.push_back(Block(this->block_palette.find(block_type)));
+            // choose a location for this Block (make sure it's unoccupied)
+            size_t x, y = 0;
+            do {
+                x = co_ord_generator(random_number_engine);
+                y = co_ord_generator(random_number_engine);
+            } while (this->grid[x][y] != NULL); // if exists, pick a new cell
+            this->grid[x][y] = &this->blocks[i];
+        }
+        // finally, pick one random block to be 'attached'
+        this->blocks[co_ord_generator(random_number_engine)].is_attached = true;
+    }
+
+    void Level::attach_block(size_t x, size_t y) {
+        Block* block = this->grid[x][y];
+        if (block != NULL && !block->is_attached) {
+            // mark the Block as attached
+            block->is_attached = true;
+            // call this method recursively on adjacent cells
+            if (x > 0) { // to the left
+                this->attach_block(x - 1, y);
+            }
+            if (x < this->grid_size - 1) { // to the right
+                this->attach_block(x + 1, y);
+            }
+            if (y > 0) { // to the top
+                this->attach_block(x, y - 1);
+            }
+            if (y < this->grid_size - 1) { // to the bottom
+                this->attach_block(x, y + 1);
+            }
+        }
+    }
+
     bool Level::shift_possible(Direction move) const {
         size_t zero = 0;
         size_t last = this->grid_size - 1;
@@ -272,26 +323,5 @@ namespace mindblock {
         }
         // if we got this far, all are empty and the shift is possible
         return true;
-    }
-
-    void Level::attach_block(size_t x, size_t y) {
-        Block* block = this->grid[x][y];
-        if (block != NULL && !block->is_attached) {
-            // mark the Block as attached
-            block->is_attached = true;
-            // call this method recursively on adjacent cells
-            if (x > 0) { // to the left
-                this->attach_block(x - 1, y);
-            }
-            if (x < this->grid_size - 1) { // to the right
-                this->attach_block(x + 1, y);
-            }
-            if (y > 0) { // to the top
-                this->attach_block(x, y - 1);
-            }
-            if (y < this->grid_size - 1) { // to the bottom
-                this->attach_block(x, y + 1);
-            }
-        }
     }
 }

@@ -34,10 +34,12 @@ namespace mindblock {
         // for debugging, prints a bitmap of which cells are occupied/attached
         void print();
     private:
-        // returns true if it is possible to shift the Blocks in the given direction
-        bool shift_possible(Direction move) const;
+        // generates a new random puzzle
+        void generate_random_puzzle();
         // attaches blocks adjacent to a given Block
         void attach_block(size_t x, size_t y);
+        // returns true if it is possible to shift the Blocks in the given direction
+        bool shift_possible(Direction move) const;
         // reference to a mersenne twister used for level generation
         std::mt19937& random_number_engine;
         // set of all the blocks used in the puzzle

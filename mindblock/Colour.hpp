@@ -27,6 +27,8 @@ namespace mindblock {
         // end of rainbow
         // other misc. colours
         Brown,
+        // NOTE: this is a placeholder only, used for accessing the number of colours
+        META_NUMBER_OF_COLOURS,
     };
 
     // the RGB values for all the colours in our palette

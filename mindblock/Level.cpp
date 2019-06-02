@@ -120,18 +120,41 @@ namespace mindblock {
     void Level::draw(sf::RenderWindow& window) {
         // get window dimensions
         sf::Vector2u window_size = window.getSize();
-        // build a block rectangle primitive of the correct dimensions
-        sf::RectangleShape sprite(
-            sf::Vector2f(
-                (double)window_size.x / this->grid_size,
-                (double)window_size.y / this->grid_size
-            )
+        // the standard dimensions of blocks
+        sf::Vector2f block_size(
+            (double)window_size.x / this->grid_size,
+            (double)window_size.y / this->grid_size
         );
+        const float border_multiplier = 0.15f;
+        // we start off with a larger block size for creating border of attached
+        sf::RectangleShape sprite(block_size * (1.0f + border_multiplier));
+        // offset the sprite by half of the size increase to create the border
+        sprite.setOrigin(block_size * border_multiplier / 2.0f);
+        // the border of attached Blocks is white
+        sprite.setFillColor(sf::Color::White);
         // check every cell in the grid for a Block
         for (size_t y = 0; y < this->grid_size; y++) {
             for (size_t x = 0; x < this->grid_size; x++) {
                 Block* block = this->grid[x][y];
-                if (block != NULL) { // block exists, get its colour
+                // we only render attached Blocks on this first pass
+                if (block != NULL && block->is_attached) {
+                    // set Block position and render it
+                    sprite.setPosition(
+                        (double)window_size.x / this->grid_size * x,
+                        (double)window_size.y / this->grid_size * y
+                    );
+                    window.draw(sprite);
+                }
+            }
+        }
+        // reset the origin
+        sprite.setOrigin(0.0f, 0.0f);
+        // set the sprite size to the 'standard' size now to render ALL Blocks
+        sprite.setSize(block_size);
+        for (size_t y = 0; y < this->grid_size; y++) {
+            for (size_t x = 0; x < this->grid_size; x++) {
+                Block* block = this->grid[x][y];
+                if (block != NULL) {
                     // NOTE: in the future, we'll need to check Block Shape
                     BlockType type = *block->block_type;
                     // this dereference prevents COLOUR_MAP from being const for some reason
@@ -141,16 +164,6 @@ namespace mindblock {
                         (double)window_size.x / this->grid_size * x,
                         (double)window_size.y / this->grid_size * y
                     );
-                    // if Block is attached, give it an outline
-                    if (block->is_attached) {
-                        // give the shape a negative outline thickness so it extends into itself
-                        sprite.setOutlineThickness(
-                            // thickness is one 50th of size
-                            -(double)window_size.x / this->grid_size / 50
-                        );
-                    } else {
-                        sprite.setOutlineThickness(0.0f);
-                    }
                     window.draw(sprite);
                 }
             }

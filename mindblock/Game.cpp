@@ -16,12 +16,12 @@ namespace mindblock {
       , window(
             sf::VideoMode(640, 640),
             "Mindblock [DEMO] (c) Joshua Saxby 2019",
-            sf::Style::Titlebar | sf::Style::Close,
-            sf::ContextSettings(
-                0, // depth
-                0, // stencil
-                1
-            )
+            sf::Style::Titlebar | sf::Style::Close // ,
+            // sf::ContextSettings(
+            //     0, // depth
+            //     0, // stencil
+            //     1
+            // )
         )
       , running(true)
       {

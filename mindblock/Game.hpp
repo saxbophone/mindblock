@@ -4,6 +4,7 @@
 #include <random>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "Level.hpp"
 
@@ -21,6 +22,9 @@ namespace mindblock {
         Level current_level;
         sf::RenderWindow window;
         bool running;
+        // mouse button object-drag state
+        bool mouse_button_held;
+        sf::Vector2<double> touch_start;
         // responds to events
         void handle_events();
         // draws the Game to the window

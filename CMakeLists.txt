@@ -62,7 +62,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "")
     # enable 'extra' strict warnings
     enable_cxx_compiler_flag_if_supported("-Wextra")
     # convert all warnings into errors
-    enable_cxx_compiler_flag_if_supported("-Werror")
+    # enable_cxx_compiler_flag_if_supported("-Werror")
 endif()
 
 # default build type is only static if on Windows

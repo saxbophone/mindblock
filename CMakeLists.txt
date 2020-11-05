@@ -1,6 +1,11 @@
 # begin basic metadata
 cmake_minimum_required(VERSION 3.0)
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
+
 project(mindblock VERSION 0.0.0 LANGUAGES CXX)
 # set build number - this increments for any new version
 set(MINDBLOCK_VERSION_BUILD 1)

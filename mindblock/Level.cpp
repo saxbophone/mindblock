@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <type_traits>
 #include <utility>
@@ -24,8 +25,8 @@ namespace mindblock {
         }
         // generate a random puzzle
         this->generate_random_puzzle();
-        // attach any attachable blocks before starting
-        this->attach_blocks();
+        // keep trying to generate a solution until we succeed
+        // while (!this->generate_random_solution()) {}
     }
 
     bool Level::shift(Direction move) {
@@ -183,6 +184,17 @@ namespace mindblock {
         printf("\n");
     }
 
+    size_t Level::attached_blocks_count() const {
+        size_t count = 0;
+        for (auto const& block : this->blocks) {
+            if (block.is_attached) {
+                count++;
+            }
+        }
+        printf("%zu\n", count);
+        return count;
+    }
+
     void Level::generate_random_puzzle() {
         // these are our PRNGs for Blocks in the puzzle
         std::uniform_int_distribution<std::underlying_type<Colour>::type>
@@ -217,13 +229,37 @@ namespace mindblock {
             // choose a location for this Block (make sure it's unoccupied)
             size_t x, y = 0;
             do {
-                x = co_ord_generator(random_number_engine);
-                y = co_ord_generator(random_number_engine);
+                x = co_ord_generator(this->random_number_engine);
+                y = co_ord_generator(this->random_number_engine);
             } while (this->grid[x][y] != NULL); // if exists, pick a new cell
             this->grid[x][y] = &this->blocks[i];
         }
         // finally, pick one random block to be 'attached'
-        this->blocks[co_ord_generator(random_number_engine)].is_attached = true;
+        this->blocks[co_ord_generator(this->random_number_engine)].is_attached = true;
+        // and attach any attachable blocks to let the puzzle 'settle'
+        this->attach_blocks();
+    }
+
+    bool Level::generate_random_solution() {
+        // make a copy of this Level
+        Level solution = *this;
+        // PRNG for move commands
+        std::uniform_int_distribution<std::underlying_type<Direction>::type>
+            move_generator(0, 3);
+        size_t shift_count = 0;
+        // until all blocks are attached
+        while (solution.attached_blocks_count() < this->blocks.size()) {
+            // deadlock-breaker, if not all attached after certain number of shifts, quit
+            if (shift_count > 100) {
+                // we got stuck, we need to try again
+                return false;
+            }
+            // feed random shift commands to the copy of the Level
+            solution.shift((Direction)move_generator(this->random_number_engine));
+            shift_count++;
+        }
+        // we successfully generated a puzzle solution
+        return true;
     }
 
     void Level::attach_block(size_t x, size_t y) {

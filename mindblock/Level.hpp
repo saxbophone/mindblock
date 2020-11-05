@@ -33,9 +33,13 @@ namespace mindblock {
         void draw(sf::RenderWindow& window);
         // for debugging, prints a bitmap of which cells are occupied/attached
         void print();
+        // returns count of attached blocks in the Level
+        size_t attached_blocks_count() const;
     private:
         // generates a new random puzzle
         void generate_random_puzzle();
+        // tries to generate a new random solution for this given puzzle
+        bool generate_random_solution();
         // attaches blocks adjacent to a given Block
         void attach_block(size_t x, size_t y);
         // returns true if it is possible to shift the Blocks in the given direction
